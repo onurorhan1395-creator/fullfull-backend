@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: fullfull_panel
+      POSTGRES_USER: fullfull
+      POSTGRES_PASSWORD: fullfull_sifre
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgres://fullfull:fullfull_sifre@db:5432/fullfull_panel
+      API_KEY: gelistirme-anahtari
+      PORT: 4000
+    env_file:
+      - .env
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  db_data:
